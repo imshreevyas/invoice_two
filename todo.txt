@@ -1,0 +1,36 @@
+-- Profile --
+Company Name
+LOGO
+registered office
+bank details
+sales off address
+Contact Number
+Office Number
+Other Number
+GST Number
+
+
+-- Invoice 1 -- 
+
+invoice number 
+invoice date
+bill to address
+ship to address
+PO details
+
+Product Details
+
+Notes (multiple)
+
+-- Invoice 2 (Purchase Order)--
+
+logo
+date
+P.O number
+purchase From Address
+Ship & Bill To Address
+P.O Details
+
+Product Details
+Notes (Multiple)
+
