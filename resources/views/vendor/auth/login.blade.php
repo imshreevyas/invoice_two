@@ -8,11 +8,12 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="<?= url('public/plugins/fontawesome-free/css/all.min.css') ?>">
+  <link rel="stylesheet" href="<?=url('public/plugins/fontawesome-free/css/all.min.css')?>">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="<?= url('public/plugins/icheck-bootstrap/icheck-bootstrap.min.css') ?>">
+  <link rel="stylesheet" href="<?=url('public/plugins/icheck-bootstrap/icheck-bootstrap.min.css')?>">
   <!-- Theme style -->
-  <link rel="stylesheet" href="<?= url('public/dist/css/adminlte.min.css') ?>">
+  <link rel="stylesheet" href="<?=url('public/dist/css/adminlte.min.css')?>">
+  <link rel="stylesheet" href="<?=url('public/snackbar/toastify.min.css')?>">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -43,20 +44,20 @@
         </div>
         <div class="row">
           <!-- /.col -->
-          <div class="col-4">
+          <div class="col-6">
             <button type="button" class="btn btn-primary btn-block" id="validateLogin">Sign In</button>
           </div>
           <!-- /.col -->
         </div>
       </form>
 
-      
+
       <!-- /.social-auth-links -->
 
       <p class="mb-1">
         <a href="forgot-password.html">I forgot my password</a>
       </p>
-      
+
     </div>
     <!-- /.card-body -->
   </div>
@@ -65,15 +66,18 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="<?= url('public/plugins/jquery/jquery.min.js') ?>"></script>
+<script src="<?=url('public/plugins/jquery/jquery.min.js')?>"></script>
 <!-- Bootstrap 4 -->
-<script src="<?= url('public/plugins/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
+<script src="<?=url('public/plugins/bootstrap/js/bootstrap.bundle.min.js')?>"></script>
 <!-- AdminLTE App -->
-<script src="<?= url('public/dist/js/adminlte.min.js') ?>"></script>
+<script src="<?=url('public/dist/js/adminlte.min.js')?>"></script>
+<script src="<?=url('public/snackbar/toastify-js.js')?>"></script>
+<script src="<?=url('public/dist/js/common.js')?>"></script>
+
 
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
 
+<script>
   function showPass(e){
     var new_class = $(e).hasClass('fa-eye') ? 'fa-eye-slash' : 'fa-eye';
     var old_class = $(e).hasClass('fa-eye') ? 'fa-eye' : 'fa-eye-slash';
@@ -82,16 +86,30 @@
     $('#password').attr('type', type);
   }
 
-
-
   $('#validateLogin').click(()=>{
+
+    $('#validateLogin').html('Please Wait...');
     var formdata  = new FormData();
     formdata.append('email', $('#email').val())
     formdata.append('password', $('#password').val())
 
     axios.post('validate_vendor', formdata).then(function(res){
-      console.log(res)
+
+      $('#validateLogin').html('Login now.');
+
+      Object.values(res.data.message).forEach((msg) => {
+          show_Toaster(msg, res.data.type);
+      })
+      if(res.data.type == 'success'){
+        window.location.href = 'dashboard';
+      }
+
     }).catch(function(error){
+
+      Object.values(error.response.data.errors).forEach((msg) => {
+          show_Toaster(msg[0], 'error');
+      })
+      $('#validateLogin').html('Login now.');
       console.log(error);
     })
 
