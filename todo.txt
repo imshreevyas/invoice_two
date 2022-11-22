@@ -17,20 +17,16 @@ invoice date
 bill to address
 ship to address
 PO details
-
 Product Details
-
 Notes (multiple)
 
 -- Invoice 2 (Purchase Order)--
 
-logo
 date
 P.O number
 purchase From Address
 Ship & Bill To Address
 P.O Details
-
 Product Details
 Notes (Multiple)
 

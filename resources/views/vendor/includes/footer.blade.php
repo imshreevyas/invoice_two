@@ -36,6 +36,7 @@
 <!-- jQuery Knob Chart -->
 <script src="<?= url('public/plugins/jquery-knob/jquery.knob.min.js') ?>"></script>
 <!-- daterangepicker -->
+
 <script src="<?= url('public/plugins/moment/moment.min.js') ?>"></script>
 <script src="<?= url('public/plugins/daterangepicker/daterangepicker.js') ?>"></script>
 <!-- Tempusdominus Bootstrap 4 -->
@@ -48,6 +49,7 @@
 <script src="<?= url('public/dist/js/adminlte.js') ?>"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?= url('public/dist/js/demo.js') ?>"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="<?= url('public/dist/js/pages/dashboard.js') ?>"></script>
 </body>
