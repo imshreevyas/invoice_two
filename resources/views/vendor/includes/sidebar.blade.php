@@ -42,16 +42,6 @@
             </a>
           </li>
 
-          <li class="nav-header">Clients</li>
-          <li class="nav-item">
-            <a href="addClient" class="nav-link">
-              <i class="nav-icon far fa-user"></i>
-              <p>
-                Add Clients
-                
-              </p>
-            </a>
-          </li>
           <li class="nav-item">
             <a href="allClients" class="nav-link">
               <i class="nav-icon fas fa-users"></i>

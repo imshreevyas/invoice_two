@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="<?= url('public/plugins/daterangepicker/daterangepicker.css') ?>">
   <!-- summernote -->
   <link rel="stylesheet" href="<?= url('public/plugins/summernote/summernote-bs4.min.css') ?>">
+  <link rel="stylesheet" href="<?=url('public/snackbar/toastify.min.css')?>">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">

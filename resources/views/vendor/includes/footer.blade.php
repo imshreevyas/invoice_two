@@ -52,5 +52,9 @@
 
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="<?= url('public/dist/js/pages/dashboard.js') ?>"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="<?=url('public/snackbar/toastify-js.js')?>"></script>
+<script src="<?=url('public/dist/js/common.js')?>"></script>
+
 </body>
 </html>
