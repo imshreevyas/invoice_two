@@ -28,13 +28,8 @@ class VendorController extends Controller
 
     public function allClients()
     {
-        $data = Clients::paginate(15);
+        $data = Clients::orderByDesc('id')->paginate(15);
         return view('vendor.clients.clients')->with('data', $data);
-    }
-
-    public function addClient()
-    {
-        return view('vendor.clients.addClient');
     }
 
     public function allInvoice()
@@ -42,10 +37,11 @@ class VendorController extends Controller
         $data = Invoice::paginate(15);
         return view('vendor.invoice.invoices')->with('data', $data);
     }
-
+    
     public function addInvoice()
     {
-        return view('vendor.invoice.addInvoice');
+        $clients = Clients::select('client_name')->orderByDesc('id')->get();
+        return view('vendor.invoice.addInvoice')->with('clients', $clients);
     }
 
     public function editInvoice($id)
@@ -63,22 +59,20 @@ class VendorController extends Controller
     {
         $data = $request->validate([
             'client_name' => 'required|string',
-            'id'          => 'required',
-            'status'      => 'required'
         ]);
 
         if (Clients::create([
             'client_name' => $request->client_name,
-            'status'      => $request->status
+            'created_at' => date('Y-m-d H:i:s'),
+            'status'      => 1
         ])) {
-            return response()->json($this->response_array('success', ['Updated successful']));
+            return response()->json($this->response_array('success', ['New Added successful']));
         } else
             return response()->json($this->response_array('error', ['Something went Wrong.']));
     }
 
     public function edit_client(Request $request)
     {
-        // dd($request->all());
         $data = $request->validate([
             'client_name' => 'required|string',
             'id'          => 'required',
@@ -89,7 +83,7 @@ class VendorController extends Controller
             'client_name' => $request->client_name,
             'status'      => $request->status
         ]))
-            return response()->json($this->response_array('success', ['Added successful']));
+            return response()->json($this->response_array('success', ['Updated successful']));
         else
             return response()->json($this->response_array('error', ['Something went wrong!']));
     }
@@ -113,8 +107,6 @@ class VendorController extends Controller
     // Invoice Section 
     public function add_invoice(Request $request)
     {
-        // echo 'dsadas';
-        // exit;
         dd($request->all());
     }
 

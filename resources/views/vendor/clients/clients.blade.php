@@ -36,6 +36,9 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">All Invoices Till Date</h3>
+                            <div class="float-right">
+                                <button class="btn btn-primary " onclick="show_add_client_modal()">Add New Client</button>
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body table-responsive p-0">
@@ -89,8 +92,8 @@
     <!-- Main Content -->
 </div>
 
-
-<div class="modal" tabindex="-1" role="dialog">
+<!--  Edit Modal -->
+<div class="modal" id="edit_modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -120,19 +123,50 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="updateClient()" id="updateClient">Update Client</button>
-                <button type="button" class="btn btn-secondary" onclick="clearModelData()" >Close</button>
+                <button type="button" class="btn btn-primary" onclick="update_client()" id="updateClient">Update Client</button>
+                <button type="button" class="btn btn-secondary" onclick="clear_edit_model_data()" >Close</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Add Modal -->
+<div class="modal" id="add_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Client Name</label>
+                            <input type="text" class="form-control" id="add_client_name" placeholder="Client Name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="add_client()" id="addClient">Add Client</button>
+                <button type="button" class="btn btn-secondary" onclick="clear_add_model_data()" >Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- footer Component -->
 @include('vendor.includes.footer')
 
 
 <script>
+
     function show_modal(id, name, status) {
-        $('.modal').modal('show');
+        $('#edit_modal').modal('show');
         $('#client_name').val(name);
         $('#updateClient').val(id);
 
@@ -140,8 +174,25 @@
         $(`#${status_id}`).attr('checked', 'true');
     }
 
+    function show_add_client_modal() {
+        $('#add_client_name').val('');
+        $('#add_modal').modal('show');
+    }
 
-    function updateClient() {
+    function clear_edit_model_data(){
+        $('#edit_modal').modal('hide');
+        $('#client_name').val('');
+        $('#updateClient').val('');
+        $('#updateClient').html('Update now.');
+    }
+
+    function clear_add_model_data(){
+        $('#add_modal').modal('hide');
+        $('#client_name').val('');
+        $('#updateClient').html('Add Client');
+    }
+
+    function update_client() {
 
         $('#updateClient').html('Please Wait...');
         const urlParams = new URLSearchParams(window.location.search);
@@ -163,26 +214,41 @@
                 show_Toaster(msg, res.data.type);
             })
             if (res.data.type == 'success') {
-                $('.modal').modal('hide');
+                $('#edit_modal').modal('hide');
                 window.location.href = `allClients${param}`;
             }
 
         }).catch(function(error) {
-
-            return console.log(error);
             Object.values(error.response.data.errors).forEach((msg) => {
                 show_Toaster(msg[0], 'error');
             })
             $('#updateClient').html('Update now.');
-            console.log(error);
         })
     }
 
+    function add_client(){
+        $('#addClient').html('Please Wait...');
+        var formdata = new FormData();
+        formdata.append('client_name', $('#add_client_name').val());
 
-    function clearModelData(){
-        $('.modal').modal('hide');
-        $('#client_name').val('');
-        $('#updateClient').val('');
-        $('#updateClient').html('Update now.');
+        axios.post('add_client', formdata).then(function(res) {
+
+            Object.values(res.data.message).forEach((msg) => {
+                show_Toaster(msg, res.data.type);
+            })
+            if (res.data.type == 'success') {
+                $('#client_name').val('');
+                $('#addClient').html('Add Client');
+                $('#edit_modal').modal('hide');
+                window.location.href = `allClients`;
+            }
+
+        }).catch(function(error) {
+            Object.values(error.response.data.errors).forEach((msg) => {
+                show_Toaster(msg[0], 'error');
+            })
+            $('#addClient').html('Add Client');
+        })
     }
+   
 </script>

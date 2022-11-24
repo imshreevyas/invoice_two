@@ -26,7 +26,7 @@ Route::group(['middleware' => 'vendor_auth'], function(){
     
     // Client Section
     Route::get('/allClients', [VendorController::class, 'allClients']);
-    Route::post('/addClient', [VendorController::class, 'addClient']);
+    Route::post('/add_client', [VendorController::class, 'add_client']);
     Route::post('/edit_client', [VendorController::class, 'edit_client']);
 
     // Invoice Section
