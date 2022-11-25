@@ -55,7 +55,7 @@
                                         <option value="0">Other</option>
                                         @else
                                         @foreach($clients as $key => $client)
-                                        <option value="1"><?= $client->client_name ?></option>
+                                        <option value="<?= $client->client_name ?>"><?= $client->client_name ?></option>
                                         @endforeach
                                         <option value="0">Other</option>
                                         @endif
@@ -103,7 +103,7 @@
                             <div class="col-md-2 d-none" id="client_name_text_box">
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Client Name</label>
-                                    <input type="text" class="form-control" name="client_name" id="client_name" placeholder="Client Name">
+                                    <input type="text" class="form-control" name="client_name_text_box" id="client_name" placeholder="Client Name">
                                 </div>
                             </div>
 
@@ -276,7 +276,7 @@
                             </div>
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body" id="pro_div">
+                        <div class="card-body" id="pro_div_0">
                             <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -318,7 +318,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="button" class="btn btn-primary" onclick="append_product_div()">Add New Box</button>
-                            <button type="button" class="btn btn-primary" onclick="append_product()">Add New</button>
+                            <button type="button" class="btn btn-primary" onclick="append_product('pro_div_0', '0')">Add New</button>
                         </div>
 
                         <!-- /.card-body -->
@@ -499,53 +499,52 @@
     }
 
 
-    function append_product() {
+    function append_product(div,box) {
         product_details_key++;
         var html = `<div class="row" id="pro_${product_details_key}">
             <button type="button" class="btn-sm btn btn-link text-danger" onclick="delete_div('pro_${product_details_key}')"><i class="fas fa-trash "></i></button>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Part No.</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][part_num]" id="part_number" placeholder="Part Number">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][part_num]" id="part_number" placeholder="Part Number">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Desc</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][desc]" id="bill_to" placeholder="Enter Description">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][desc]" id="bill_to" placeholder="Enter Description">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">QTY</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][qty]" id="bill_to" placeholder="Enter Quantity">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][qty]" id="bill_to" placeholder="Enter Quantity">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Unit Price</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][ship_acc]" id="bill_to" placeholder="Enter Unit Price">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][ship_acc]" id="bill_to" placeholder="Enter Unit Price">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">CD</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][cd]" id="bill_to" placeholder="Enter CD">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][cd]" id="bill_to" placeholder="Enter CD">
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Total Price</label>
-                    <input type="text" class="form-control" name="product_details[${product_details_key}][tracking_no]" id="bill_to" placeholder="Enter Total Price">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][tracking_no]" id="bill_to" placeholder="Enter Total Price">
                 </div>
             </div>
         </div>`;
-        append_to_child('pro_div', html)
+        append_to_child(div, html)
     }
 
 
     function append_product_div(){
-        console.log('sadasdasd');
         box++;
         var html = `<div class="card card-default" id="box_${box}">
             <div class="card-header">
@@ -555,7 +554,7 @@
                 </div>
             </div>
             <!-- /.card-header -->
-            <div class="card-body" id="pro_div">
+            <div class="card-body" id="pro_div_${box}">
                 <div class="row">
                     <div class="col-md-2">
                         <div class="form-group">
@@ -597,7 +596,7 @@
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-primary" onclick="append_product_div()">Add New Box</button>
-                <button type="button" class="btn btn-primary" onclick="append_product()">Add New</button>
+                <button type="button" class="btn btn-primary" onclick="append_product('pro_div_${box}', '${box}')">Add New</button>
             </div>
 
             <!-- /.card-body -->

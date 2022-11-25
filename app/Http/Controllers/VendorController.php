@@ -49,6 +49,14 @@ class VendorController extends Controller
         return view('vendor.invoice.editInvoice');
     }
 
+    public function invoicePreview()
+    {
+        $id = 4;
+        $data = Invoice::find($id);
+        return view('vendor.invoice.invoicePreview')->with('data', $data);
+    }
+
+
     public function profile()
     {
         return view('vendor.account.profile');
@@ -107,7 +115,25 @@ class VendorController extends Controller
     // Invoice Section 
     public function add_invoice(Request $request)
     {
-        dd($request->all());
+        // dd($request->all());
+        if (Invoice::create([
+            'invoice_type' => $request->invoice_type == 0 ? 'Proforma Invoice' : ($request->invoice_type == 1 ? 'P.o Invoice' : 'Commercial Invoice'),
+            'client_name' => $request->client_name == 0 ? $request->client_name_text_box : $request->client_name,
+            'invoice_no' => $request->invoice_no,
+            'invoice_date' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
+            'po_number' => $request->po_number,
+            'bill_to' => json_encode($request->bill_to),
+            'ship_to' => '',
+            'po_details' => '',
+            'product_details' =>  json_encode($request->box),
+            'notes' =>  json_encode($request->notes),
+            'extra' =>  $request->extra,
+            'created_at' => date('Y-m-d H:i:s'),
+            'status' => 1
+        ])) {
+            dd($this->response_array('success', ['New Added successful']));
+        } else
+            dd($this->response_array('success', ['error']));
     }
 
 
