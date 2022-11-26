@@ -49,11 +49,12 @@ class VendorController extends Controller
         return view('vendor.invoice.editInvoice');
     }
 
-    public function invoicePreview()
+    public function invoicePreview($id)
     {
-        $id = 4;
+        // $id = 4;
         $data = Invoice::find($id);
-        return view('vendor.invoice.invoicePreview')->with('data', $data);
+        $userData = Auth::guard('vendor')->user();
+        return view('vendor.invoice.invoicePreview')->with(['data' => $data, 'user_data' => $userData]);
     }
 
 

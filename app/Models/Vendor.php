@@ -26,6 +26,7 @@ class Vendor extends Model
         'other_address',
         'other_address',
         'bank_details',
+        'swift_bank_details',
         'city',
         'state',
         'last_login_ip',

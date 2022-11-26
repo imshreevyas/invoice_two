@@ -79,6 +79,7 @@
                                         <td><?= $invoice->created_at ?></td>
                                         <td>
                                             <a href="editInvoice/<?= $invoice->id ?>" class="btn btn-sm btn-primary">Edit</a>
+                                            <a href="invoicePreview/<?= $invoice->id ?>" class="btn btn-sm btn-primary">Preview</a>
                                         </td>
                                     </tr>
                                     @endforeach

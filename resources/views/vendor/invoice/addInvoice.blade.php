@@ -55,11 +55,20 @@
                                         <option value="0">Other</option>
                                         @else
                                         @foreach($clients as $key => $client)
-                                        <option value="<?= $client->client_name ?>"><?= $client->client_name ?></option>
+                                            @if($client->client_name != '')
+                                                <option value="<?= $client->client_name ?>"><?= $client->client_name ?></option>
+                                            @endif
                                         @endforeach
                                         <option value="0">Other</option>
                                         @endif
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 d-none" id="client_name_text_box">
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Client Name</label>
+                                    <input type="text" class="form-control" name="client_name_text_box" id="client_name" placeholder="Client Name">
                                 </div>
                             </div>
 
@@ -93,21 +102,12 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-2">
+                            <!-- <div class="col-md-2">
                                 <div class="form-group" id="po_number">
                                     <label for="exampleInputPassword1">P.O Number</label>
                                     <input type="text" class="form-control" name="po_number" placeholder="P.O Number">
                                 </div>
-                            </div>
-
-                            <div class="col-md-2 d-none" id="client_name_text_box">
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Client Name</label>
-                                    <input type="text" class="form-control" name="client_name_text_box" id="client_name" placeholder="Client Name">
-                                </div>
-                            </div>
-
-
+                            </div> -->
                         </div>
                     </div>
                     <!-- /.card-body -->
@@ -201,7 +201,7 @@
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="exampleInputPassword1">Ref Number</label>
+                                    <label for="exampleInputPassword1">Ref / PO Number</label>
                                     <input type="text" class="form-control" name="po_details[ref_number]" id="ref_number" placeholder="Ref Number">
                                 </div>
                             </div>
@@ -311,7 +311,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Total Price</label>
-                                        <input type="text" class="form-control" name="box[0][0][tracking_no]" id="bill_to" placeholder="Enter Total Price">
+                                        <input type="text" class="form-control" name="box[0][0][p_total]" id="bill_to" placeholder="Enter Total Price">
                                     </div>
                                 </div>
                             </div>
@@ -536,7 +536,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Total Price</label>
-                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][tracking_no]" id="bill_to" placeholder="Enter Total Price">
+                    <input type="text" class="form-control" name="box[${box}][${product_details_key}][p_total]" id="bill_to" placeholder="Enter Total Price">
                 </div>
             </div>
         </div>`;
@@ -589,7 +589,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Total Price</label>
-                            <input type="text" class="form-control" name="box[${box}][0][tracking_no]" id="bill_to" placeholder="Enter Total Price">
+                            <input type="text" class="form-control" name="box[${box}][0][p_total]" id="bill_to" placeholder="Enter Total Price">
                         </div>
                     </div>
                 </div>
@@ -612,11 +612,9 @@
     // Other Functions
     function show_po_card(e) {
 
-        if ($('#show_po').val() == 1) {
-            $('#po_number').removeClass('d-none');
+        if ($('#show_po').val() != 2) {
             $('#po_details').removeClass('d-none');
         } else {
-            $('#po_number').addClass('d-none');
             $('#po_details').addClass('d-none');
         }
     }

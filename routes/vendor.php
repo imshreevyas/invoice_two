@@ -34,7 +34,7 @@ Route::group(['middleware' => 'vendor_auth'], function(){
     Route::get('/addInvoice', [VendorController::class, 'addInvoice']);
     Route::get('/editInvoice/{id}', [VendorController::class, 'editInvoice']);
     Route::post('/add_invoice', [VendorController::class, 'add_invoice']);
-    Route::get('/invoicePreview', [VendorController::class, 'invoicePreview']);
+    Route::get('/invoicePreview/{id}', [VendorController::class, 'invoicePreview']);
     
     // Profile Section
     Route::get('/profile', [VendorController::class, 'profile']);

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->longText('office_address')->nullable();
             $table->longText('other_address')->nullable();
             $table->longText('bank_details')->nullable();
+            $table->longText('swift_bank_details')->nullable();
             $table->string('city', 100)->nullable();
             $table->string('state', 100)->nullable();
             $table->string('last_login_ip', 20)->nullable();

@@ -142,8 +142,9 @@
     }
 
     .color-red {
-        color:red !important;
+        color: red !important;
     }
+
     .table td,
     .table th {
         padding: 0.25rem;
@@ -496,21 +497,24 @@
         <!-- sidebar -->
         <div style="padding: 20px 0px 50px 0px" class="ttm-row only-one-section ttm-bgcolor-white clearfix">
             <div class="container">
-                <!-- row -->
-                <div class="row table_width" style="text-align: center">
-                    <img src="img/logo.png" width="100" alt="">
-                    <h4 style="margin: 0; text-align: center">Tax Invoice</h4>
 
+                <!-- row -->
+                <div class="table_width" style="border:1px solid #000; padding:5px">
+
+                    <div style="display: flex; justify-content: space-between;padding:15px">
+                        <div>
+                            <img src="img/logo.png" style="width:100px" alt="">
+                        </div>
+                        <div>
+                            <h4> {{ $data['invoice_type'] == 0 ? 'Proforma Invoice' : ($data['invoice_type'] == 0 ? 'P.o Invoice' : 'Commercial Invoice') }} </h4>
+                        </div>
+                    </div>
 
                     @if($data['invoice_type'] == 0)
                     <div style="display: flex; justify-content: space-between;">
                         <div>
                             <p style="text-align: left;"><span style="font-size:
-                  17px;font-weight:500">Regd Off : SPARK AVIATION</span><br>
-                                <span style="font-weight:500">601, Raj Atlantis 1,</span><br>
-                                <span style="font-weight:500">Ramdev Park, Mira Road East,</span><br>
-                                <span style="font-weight:500">Thane 401107,</span> <br>
-                                <span style="font-weight:500">MAHARASHRA, INDIA</span>
+                  17px;font-weight:500">Regd Off : {!! $user_data->office_address !!}
                             </p>
                         </div>
                         <div>
@@ -542,29 +546,29 @@
 
 
                     <!-- Address Section -->
-                    <div style="padding:20px 40px 20px 40px;">
+                    <div style="padding:0px">
                         <table style="border-collapse: collapse;border-spacing: 0px;width: 100%;border-top: 0px;border-bottom: 1px solid;border-right: 1px solid;padding: 20px;" id="headings" class="table table-bordered">
                             <tbody>
                                 @php($address = json_decode($data['bill_to'], true))
                                 @if(count($address) > 0)
-                                    @php($j = 1)
-                                    @for($i=1; $i <= count($address); $i++) @if($j < 2) <tr>
-                                        @endif
-                                        <th style="text-align: left">
-                                            <h6>{{ $address[$i-1]['title'] }}</h6>
+                                @php($j = 1)
+                                @for($i=1; $i <= count($address); $i++) @if($j < 2) <tr>
+                                    @endif
+                                    <th style="text-align: left">
+                                        <h6>{{ $address[$i-1]['title'] }}</h6>
 
-                                            <span style="font-weight: 500">
-                                                {{ $address[$i-1]['address'] }}
-                                            </span>
-                                        </th>
-                                        @if($j == 2 || $i == count($address))
-                                        @php($j = 1)
-                                        </tr>
-                                        @else
-                                            @php($j++)
-                                        @endif
+                                        <span style="font-weight: 500">
+                                            {{ $address[$i-1]['address'] }}
+                                        </span>
+                                    </th>
+                                    @if($j == 2 || $i == count($address))
+                                    @php($j = 1)
+                                    </tr>
+                                    @else
+                                    @php($j++)
+                                    @endif
                                     @endfor
-                                @endif
+                                    @endif
                             </tbody>
                         </table>
                     </div>
@@ -572,13 +576,13 @@
 
 
                     <!-- PO Details Section -->
-                    @php($po_details = json_decode($data['po_details'],true))
-                    @if($data['invoice_type'] == 1 && count($po_details) > 0) 
-                    <table style="border-collapse: collapse;border-spacing: 0px;width: 100%;border-top: 1px;" id="headings" class="table table-bordered">
+                    @php($po_details = $data['po_details'] != '' ? json_decode($data['po_details'],true) : array())
+                    @if($data['invoice_type'] != 2 && count($po_details) > 0)
+                    <table style="border-collapse:collapse;border-spacing:0px;width: 100%;border-top:1px;margin-top:15px" id="headings" class="table table-bordered">
                         <tbody style="border: 1px solid;">
                             <tr style="border: 1px solid;">
                                 <td class="bold" style="border-top: 1px;text-align: center;" colspan="1">
-                                    P.O. No.
+                                    P.O/Ref No.
                                 </td>
                                 <td class="bold text-center" style="border-top: 0px" colspan="1">
                                     Terms
@@ -602,13 +606,13 @@
 
 
                             <tr>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ref_number'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['terms'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details['po_order_date'])) }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ship_via'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details['po_ship_date'])) }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ship_acc'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['tracking_no'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ref_number'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['terms'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details[0]['po_order_date'])) }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ship_via'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details[0]['po_ship_date'])) }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ship_acc'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['tracking_no'] }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -619,102 +623,116 @@
 
                     <!-- Products Details Section-->
 
-                    <table style="border-collapse: collapse;border-spacing: 0px;width: 100%;border-top: 1px;margin-top: 30px;" id="headings" class="table table-bordered">
-                        <tbody style="border: 0px solid;">
-                            <tr style="border: 1px solid;">
-                                <td class="bold" style="border-top: 1px;text-align: center;" colspan="1">
-                                    S.N
-                                </td>
-                                <td class="bold text-center" style="border-top: 0px" colspan="1">
-                                    PART NO>
-                                </td>
-                                <td class="bold" style="border-top: 1px" colspan="1">
-                                    DESC>
-                                </td>
-                                <td class="bold" style="border-top: 1px" colspan="1">
-                                    QTY
-                                </td>
-                                <td class="bold" style="border-top: 1px" colspan="1">
-                                    CD
-                                </td>
-                                <td class="bold" style="border-top: 1px" colspan="1">
-                                    UNIT PRICE $
-                                </td>
-                                <td class="bold" style="border-top:1px" colspan="1">
-                                    TOTAL PRICE $
-                                </td>
-                            </tr>
+                    <!-- Box Loop -->
+                    @php($boxs = $data['product_details'] != '' ? json_decode($data['product_details'],true) : [])
+                    @if(count($boxs) > 0)
+                        @foreach($boxs as $key => $box)
 
-                            <tr>
-                                <td class="" style="border-top: 0px" colspan="1">
-                                    1
-                                </td>
-                                <td class="" style="border-top: 0px" colspan="1">EMT00300-01</td>
-                                <td class="" style="border-top: 0px" colspan="1">
-                                    RESERVOIR
-                                </td>
-                                <td class="" style="border-top: 0px" colspan="1">1</td>
-                                <td class="" style="border-top: 0px" colspan="1">NE</td>
-                                <td class="" style="border-top: 0px" colspan="1">1303.50</td>
-                                <td class="" style="border-top: 0px" colspan="1">1303.50</td>
-                            </tr>
+                            @if($data['invoice_type'] == 2)
+                            <h6>Box {{ $key+1 }} </h6>
+                            @endif
+                            <table style="border-collapse: collapse;border-spacing: 0px;width: 100%;border-top: 1px;margin-top: 30px;" id="headings" class="table table-bordered">
+                                <tbody style="border: 0px solid;">
+                                    <tr style="border: 1px solid;">
+                                        <td class="bold" style="border-top: 1px;text-align: center;" colspan="1">
+                                            S.N
+                                        </td>
+                                        <td class="bold text-center" style="border-top: 0px" colspan="1">
+                                            PART NO.
+                                        </td>
+                                        <td class="bold" style="border-top: 1px" colspan="1">
+                                            DESC.
+                                        </td>
+                                        <td class="bold" style="border-top: 1px" colspan="1">
+                                            QTY
+                                        </td>
+                                        <td class="bold" style="border-top: 1px" colspan="1">
+                                            CD
+                                        </td>
+                                        <td class="bold" style="border-top: 1px" colspan="1">
+                                            UNIT PRICE $
+                                        </td>
+                                        <td class="bold" style="border-top:1px" colspan="1">
+                                            TOTAL PRICE $
+                                        </td>
+                                    </tr>
 
-                            <tr>
-                                <td class="" style="border: 0px" colspan="1"> </td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border-top: 0px" colspan="1">WIRE TRANS FEE-</td>
-                                <td class="" style="border-top: 0px" colspan="1"> 25.00</td>
-                            </tr>
-                            <tr style="border: 0px;">
-                                <td class="" style="border: 0px" colspan="1"> </td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border: 0px" colspan="1"></td>
-                                <td class="" style="border-top: 0px" colspan="1">TOTAL PRICE-</td>
-                                <td class="" style="border-top: 0px" colspan="1">1328.50</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    @php($products = $box)
+                                    @if(count($products) > 0)
+                                    @foreach($products as $p_key => $product)
+
+                                    <tr>
+                                        <td class="" style="border-top: 0px" colspan="1">
+                                            {{ $p_key+1 }}
+                                        </td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['part_num'] }} </td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['desc'] }}</td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['qty'] }}</td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['ship_acc'] }}</td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['cd'] }}</td>
+                                        <td class="" style="border-top: 0px" colspan="1">{{ $product['p_total'] }}</td>
+                                    </tr>
+                                    @endforeach
+                                    
+                                    <tr>
+                                        <td class="" style="border-top: 0px;" colspan="6">WIRE TRANS FEE-</td>
+                                        <td class="" style="border-top: 0px"> 25.00</td>
+                                    </tr>
+                                    <tr style="border: 0px;">
+                                        <td class="" style="border-top: 0px" colspan="6">TOTAL PRICE-</td>
+                                        <td class="" style="border-top: 0px">1328.50</td>
+                                    </tr>
+
+                                    @endif
+                                </tbody>
+                            </table>
+                        @endforeach
+                    @endif
+
+
+                    <!-- Box Loop Ends-->
 
 
                     <!-- Notes -->
+
                     @php($notes = json_decode($data['notes'], true))
                     @if(count($notes) > 0)
+                    <div style="margin-top:35px;text-align: center;">
                         @foreach($notes as $note)
-                            <h5 style="text-transform: uppercase;text-align: left;margin-top:15px;" class="{{ $note['type'] == 0 ? '' : 'color-red' }}"> {{ $note['msg'] }} </h5>
+                        <h6 style="text-transform: uppercase;margin-top:15px;" class="{{ $note['type'] == 0 ? '' : 'color-red' }}">** {{ $note['msg'] }} **</h6>
                         @endforeach
+                    </div>
                     @endif
                     <!-- Notes Ends -->
 
                     <!-- Bank Details  -->
-                    <p style="text-align: left;">Please use the following Bank details for your money transfer to <span>SPARK AVIATION</span>from outside India: </p>
+
+                    @if($data['invoice_type'] == 0)
+                    <p style="text-align: center;border-top:1px solid #000">Please use the following Bank details for your money transfer to <span>SPARK AVIATION</span>from outside India: </p>
                     <div style="display: flex; justify-content:space-between">
-                        <div style="text-align:left;color:#000;font-weight:400;font-size:13px;border:1pxsolid #000">
+                        <div style="text-align:left;color:#000;font-weight:400;font-size:13px;border:1px solid #000">
                             <p style="padding:10px;margin:0px">
-                                Beneficiary Name: <span> SPARK AVIATION</span><br>
-                                Bank Name:<span>HDFC Bank Ltd.</span><br>
-                                A/c. No:<span>50200062918771</span><br>
-                                Account Type:<span>Current</span><br>
-                                IFSC:<span>HDFC0001077</span><br>
-                                Branch:<span>Berverly Park,Mira Road, Thane</span><br>
-                                Swift Code:<span>HDFCINBB</span><br>
-                                Corresponding Bank:<span>J P Morgan Chase Bank, New York, USA</span><br>
-                                Swift Code: <span>CHASU33</span><br>
-                                CHIPS ABA:<span>0002</span><br>
-                                FEDWIRE ABA<span>021000021</span><br>
-                                CHIPS UID<span>#354459</span>
+                                {!! $user_data->bank_details !!}
+                            </p>
+                        </div>
+
+                        <div style="text-align:left;color:#000;font-weight:400;font-size:13px;border:1px solid #000">
+                            <p style="padding:10px;margin:0px">
+                                {!! $user_data->swift_bank_details !!}
                             </p>
                         </div>
 
                     </div>
+                    @endif
 
 
-                    <p class="bold" style="margin-top: 10px; text-align: left">
-                        Sales Off : Spark Aviation UBP/ST/O/3L/2A-M3M Urbana Business Park,sector-67, Gurugram, Haryana, 122101, India.
+                    <p class="bold" style="margin-top: 10px; text-align: center">
+                        Sales Off : {!! $user_data->other_address !!}
+                    </p>
+
+
+                    <p class="bold" style="margin-top: 10px; text-align: center; color:red">
+                        Note: This is computer generated Invoice no signature needed
                     </p>
                 </div>
                 <!-- row end -->
