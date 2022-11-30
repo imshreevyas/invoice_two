@@ -7,6 +7,8 @@ use App\Models\Invoice;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class VendorController extends Controller
 {
@@ -17,31 +19,38 @@ class VendorController extends Controller
 
     public function dashboard()
     {
-        $vendorId = Auth::guard('vendor')->user()->id;
-        return view('vendor.index');
+        $vendorData = Auth::guard('vendor')->user();
+        return view('vendor.index')->with('vendor_data', $vendorData);
     }
 
     public function login()
     {
+        if(Auth::guard('vendor')->user() != '')
+        return redirect()->route('dashboard');
+        else
         return view('vendor.auth.login');
     }
 
     public function allClients()
     {
         $data = Clients::orderByDesc('id')->paginate(15);
-        return view('vendor.clients.clients')->with('data', $data);
+        $vendorData = Auth::guard('vendor')->user();
+        return view('vendor.clients.clients')->with(['data' => $data, 'vendor_data' => $vendorData]);
     }
 
     public function allInvoice()
     {
         $data = Invoice::paginate(15);
-        return view('vendor.invoice.invoices')->with('data', $data);
+        $vendorData = Auth::guard('vendor')->user();
+        return view('vendor.invoice.invoices')->with(['data' => $data, 'vendor_data' => $vendorData]);
     }
     
     public function addInvoice()
     {
+        $vendorData = Auth::guard('vendor')->user();
         $clients = Clients::select('client_name')->orderByDesc('id')->get();
-        return view('vendor.invoice.addInvoice')->with('clients', $clients);
+        $invoiceData = Cache::get('addInvoiceData_'.$vendorData->id);
+        return view('vendor.invoice.addInvoice')->with(['clients' => $clients, 'invoiceData' => $invoiceData, 'vendor_data' => $vendorData]);
     }
 
     public function editInvoice($id)
@@ -54,13 +63,20 @@ class VendorController extends Controller
         // $id = 4;
         $data = Invoice::find($id);
         $userData = Auth::guard('vendor')->user();
-        return view('vendor.invoice.invoicePreview')->with(['data' => $data, 'user_data' => $userData]);
+        $vendorData = Auth::guard('vendor')->user();
+        return view('vendor.invoice.invoicePreview')->with(['data' => $data, 'user_data' => $userData, 'vendor_data' => $vendorData]);
+    }
+
+
+    public function createTemplate(){
+        return view('vendor.template.createTemplate');
     }
 
 
     public function profile()
     {
-        return view('vendor.account.profile');
+        $vendorData = Auth::guard('vendor')->user();
+        return view('vendor.profile.profile')->with('vendor_data', $vendorData);
     }
 
     //  All Post Functions 
@@ -116,22 +132,28 @@ class VendorController extends Controller
     // Invoice Section 
     public function add_invoice(Request $request)
     {
-        // dd($request->all());
-        if (Invoice::create([
-            'invoice_type' => $request->invoice_type == 0 ? 'Proforma Invoice' : ($request->invoice_type == 1 ? 'P.o Invoice' : 'Commercial Invoice'),
+        $id = Auth::guard('vendor')->user()->id;
+        dd($request->all());
+
+        $data = [
+            'invoice_type' => $request->invoice_type,
             'client_name' => $request->client_name == 0 ? $request->client_name_text_box : $request->client_name,
             'invoice_no' => $request->invoice_no,
             'invoice_date' => date('Y-m-d H:i:s', strtotime($request->invoice_date)),
-            'po_number' => $request->po_number,
             'bill_to' => json_encode($request->bill_to),
             'ship_to' => '',
-            'po_details' => '',
+            'po_details' => json_encode($request->po_details),
             'product_details' =>  json_encode($request->box),
             'notes' =>  json_encode($request->notes),
-            'extra' =>  $request->extra,
+            'extra' =>  json_encode($request->extra),
             'created_at' => date('Y-m-d H:i:s'),
             'status' => 1
-        ])) {
+        ];
+
+        Cache::forever('addInvoiceData_'.$id, $data);
+        // Redis::set('addInvoiceData_'.$id, $data);
+
+        if (Invoice::create($data)) {
             dd($this->response_array('success', ['New Added successful']));
         } else
             dd($this->response_array('success', ['error']));

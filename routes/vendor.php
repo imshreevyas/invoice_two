@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [VendorController::class, 'index']);
-Route::get('/login', [VendorController::class, 'login'])->name('vendorlogin');
 Route::get('/logout', [VendorController::class, 'logout']);
 Route::post('/validate_vendor', [VendorController::class, 'validate_vendor']);
+Route::get('/login', [VendorController::class, 'login'])->name('vendorlogin');
 
 Route::group(['middleware' => 'vendor_auth'], function(){
 
     // Dashboard
-    Route::get('/dashboard', [VendorController::class, 'dashboard']);
+    Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
     
     // Client Section
     Route::get('/allClients', [VendorController::class, 'allClients']);
@@ -35,6 +35,9 @@ Route::group(['middleware' => 'vendor_auth'], function(){
     Route::get('/editInvoice/{id}', [VendorController::class, 'editInvoice']);
     Route::post('/add_invoice', [VendorController::class, 'add_invoice']);
     Route::get('/invoicePreview/{id}', [VendorController::class, 'invoicePreview']);
+
+    // Template Creation
+    Route::get('/createTemplate', [VendorController::class, 'createTemplate']);
     
     // Profile Section
     Route::get('/profile', [VendorController::class, 'profile']);

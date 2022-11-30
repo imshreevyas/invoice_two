@@ -302,12 +302,30 @@
                                         <input type="text" class="form-control" name="box[0][0][ship_acc]" id="bill_to" placeholder="Enter Unit Price">
                                     </div>
                                 </div>
+
+
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">CD</label>
                                         <input type="text" class="form-control" name="box[0][0][cd]" id="bill_to" placeholder="Enter CD">
                                     </div>
                                 </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Net WT KGS</label>
+                                        <input type="text" class="form-control" name="box[0][0][net]" id="bill_to" placeholder="Enter Net WT KGS">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">HSN</label>
+                                        <input type="text" class="form-control" name="box[0][0][hsn]" id="bill_to" placeholder="Enter HSN">
+                                    </div>
+                                </div>
+
+
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Total Price</label>
@@ -318,7 +336,7 @@
                         </div>
                         <div class="card-footer">
                             <button type="button" class="btn btn-primary" onclick="append_product_div()">Add New Box</button>
-                            <button type="button" class="btn btn-primary" onclick="append_product('pro_div_0', '0')">Add New</button>
+                            <button type="button" class="btn btn-primary" onclick="append_product(this,'pro_div_0', '0')" data-key="0">Add New</button>
                         </div>
 
                         <!-- /.card-body -->
@@ -436,7 +454,6 @@
 
     // Variables for multiple appends last key
     var bill_to_key = 0;
-    var product_details_key = 0;
     var notes_key = 0;
     var box = 0;
 
@@ -499,7 +516,8 @@
     }
 
 
-    function append_product(div,box) {
+    function append_product(e,div,box) {
+        product_details_key = $(e).attr('data-key');
         product_details_key++;
         var html = `<div class="row" id="pro_${product_details_key}">
             <button type="button" class="btn-sm btn btn-link text-danger" onclick="delete_div('pro_${product_details_key}')"><i class="fas fa-trash "></i></button>
@@ -541,6 +559,8 @@
             </div>
         </div>`;
         append_to_child(div, html)
+        $(e).attr('data-key', product_details_key)
+        
     }
 
 
@@ -596,7 +616,7 @@
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-primary" onclick="append_product_div()">Add New Box</button>
-                <button type="button" class="btn btn-primary" onclick="append_product('pro_div_${box}', '${box}')">Add New</button>
+                <button type="button" class="btn btn-primary" onclick="append_product(this,'pro_div_${box}', '${box}')" data-key="0">Add New</button>
             </div>
 
             <!-- /.card-body -->
@@ -610,8 +630,7 @@
 
 
     // Other Functions
-    function show_po_card(e) {
-
+    function show_po_card() {
         if ($('#show_po').val() != 2) {
             $('#po_details').removeClass('d-none');
         } else {

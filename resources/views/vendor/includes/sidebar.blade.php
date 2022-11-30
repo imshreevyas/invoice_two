@@ -1,20 +1,20 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="dashboard" class="brand-link text-center">
       <!-- <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-      <span class="brand-text font-weight-light">Invoice Management</span>
+      <span class="brand-text font-weight-light"><?= $vendor_data->company_name != '' ? $vendor_data->company_name : 'Invoice Management Software' ?></span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
+      
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> -->
+          <img src="<?= url($vendor_data->logo != '' ? $vendor_data->logo : 'public/dist/img/user2-160x160.jpg' ) ?>" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block"><?= $vendor_data->username != '' ? $vendor_data->username : 'User' ?></a>
         </div>
       </div>
 
@@ -67,6 +67,24 @@
               <p>
                 All Invoices
                 <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-header">Settings</li>
+          <li class="nav-item">
+            <a href="profile" class="nav-link">
+              <i class="nav-icon far fa-user"></i>
+              <p>
+                Profile
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="logout" class="nav-link">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>
+                Logout
               </p>
             </a>
           </li>

@@ -65,9 +65,9 @@
                                 </thead>
                                 <tbody>
                                     @if(count($data) == 0)
-                                    <tr class="text-center">
-                                        <th colspan="7">No Invoice yet!</th>
-                                    </tr>
+                                        <tr class="text-center">
+                                            <th colspan="7">No Invoice yet!</th>
+                                        </tr>
                                     @else
                                     @foreach($data as $key => $invoice)
                                     <tr>

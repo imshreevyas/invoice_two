@@ -498,7 +498,7 @@
         <div style="padding: 20px 0px 50px 0px" class="ttm-row only-one-section ttm-bgcolor-white clearfix">
             <div class="container">
 
-                <!-- row -->
+                <!-- row -->                
                 <div class="table_width" style="border:1px solid #000; padding:5px">
 
                     <div style="display: flex; justify-content: space-between;padding:15px">
@@ -552,23 +552,23 @@
                                 @php($address = json_decode($data['bill_to'], true))
                                 @if(count($address) > 0)
                                 @php($j = 1)
-                                @for($i=1; $i <= count($address); $i++) @if($j < 2) <tr>
-                                    @endif
-                                    <th style="text-align: left">
-                                        <h6>{{ $address[$i-1]['title'] }}</h6>
+                                    @for($i=1; $i <= count($address); $i++) @if($j < 2) <tr>
+                                        @endif
+                                        <th style="text-align: left">
+                                            <h6>{{ $address[$i-1]['title'] }}</h6>
 
-                                        <span style="font-weight: 500">
-                                            {{ $address[$i-1]['address'] }}
-                                        </span>
-                                    </th>
-                                    @if($j == 2 || $i == count($address))
-                                    @php($j = 1)
-                                    </tr>
-                                    @else
-                                    @php($j++)
-                                    @endif
+                                            <span style="font-weight: 500">
+                                                {{ $address[$i-1]['address'] }}
+                                            </span>
+                                        </th>
+                                        @if($j == 2 || $i == count($address))
+                                            @php($j = 1)
+                                            </tr>
+                                        @else
+                                            @php($j++)
+                                        @endif
                                     @endfor
-                                    @endif
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -603,16 +603,14 @@
                                     Tracking No.
                                 </td>
                             </tr>
-
-
                             <tr>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ref_number'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['terms'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details[0]['po_order_date'])) }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ship_via'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ date('d/m/Y', strtotime($po_details[0]['po_ship_date'])) }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['ship_acc'] }}</td>
-                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details[0]['tracking_no'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ref_number'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['terms'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['po_order_date'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ship_via'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['po_ship_date'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['ship_acc'] }}</td>
+                                <td class="" style="border-top: 0px" colspan="1">{{ $po_details['tracking_no'] }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -631,6 +629,7 @@
                             @if($data['invoice_type'] == 2)
                             <h6>Box {{ $key+1 }} </h6>
                             @endif
+
                             <table style="border-collapse: collapse;border-spacing: 0px;width: 100%;border-top: 1px;margin-top: 30px;" id="headings" class="table table-bordered">
                                 <tbody style="border: 0px solid;">
                                     <tr style="border: 1px solid;">
@@ -658,6 +657,7 @@
                                     </tr>
 
                                     @php($products = $box)
+                                    @php($total = 0)
                                     @if(count($products) > 0)
                                     @foreach($products as $p_key => $product)
 
@@ -672,15 +672,29 @@
                                         <td class="" style="border-top: 0px" colspan="1">{{ $product['cd'] }}</td>
                                         <td class="" style="border-top: 0px" colspan="1">{{ $product['p_total'] }}</td>
                                     </tr>
+
+                                    @php($total = $total + $product['p_total']) 
                                     @endforeach
                                     
-                                    <tr>
-                                        <td class="" style="border-top: 0px;" colspan="6">WIRE TRANS FEE-</td>
-                                        <td class="" style="border-top: 0px"> 25.00</td>
-                                    </tr>
+
+                                    @php($extraCharges = json_decode($data['extra'],true))
+                                    @if(count($extraCharges) > 0)
+                                        @foreach($extraCharges[0] as $key => $singleCharge)
+
+                                            @if($singleCharge != '')
+                                                <tr>
+                                                    <td class="" style="border-top: 0px;" colspan="6"> {{ $key == 'wire_charge' ? 'Wire Charge' : 'Admin Charges'  }} </td>
+                                                    <td class="" style="border-top: 0px"> {{ $singleCharge }} </td>
+                                                </tr>
+                                            @php($total = $total + $singleCharge)
+                                            @endif
+                                        @endforeach
+                                    @endif
+
+
                                     <tr style="border: 0px;">
-                                        <td class="" style="border-top: 0px" colspan="6">TOTAL PRICE-</td>
-                                        <td class="" style="border-top: 0px">1328.50</td>
+                                        <td class="" style="border-top: 0px" colspan="6">Total Prices</td>
+                                        <td class="" style="border-top: 0px"> {{ $total }} </td>
                                     </tr>
 
                                     @endif
@@ -735,6 +749,7 @@
                         Note: This is computer generated Invoice no signature needed
                     </p>
                 </div>
+
                 <!-- row end -->
             </div>
         </div>
