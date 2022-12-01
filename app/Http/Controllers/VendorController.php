@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vendor;
-use App\Models\Invoice;
 use App\Models\Clients;
+use App\Models\Invoice;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
+use \PDF;
 
 class VendorController extends Controller
 {
@@ -25,10 +25,12 @@ class VendorController extends Controller
 
     public function login()
     {
-        if(Auth::guard('vendor')->user() != '')
-        return redirect()->route('dashboard');
-        else
-        return view('vendor.auth.login');
+        if (Auth::guard('vendor')->user() != '') {
+            return redirect()->route('dashboard');
+        } else {
+            return view('vendor.auth.login');
+        }
+
     }
 
     public function allClients()
@@ -44,12 +46,12 @@ class VendorController extends Controller
         $vendorData = Auth::guard('vendor')->user();
         return view('vendor.invoice.invoices')->with(['data' => $data, 'vendor_data' => $vendorData]);
     }
-    
+
     public function addInvoice()
     {
         $vendorData = Auth::guard('vendor')->user();
         $clients = Clients::select('client_name')->orderByDesc('id')->get();
-        $invoiceData = Cache::get('addInvoiceData_'.$vendorData->id);
+        $invoiceData = Cache::get('addInvoiceData_' . $vendorData->id);
         return view('vendor.invoice.addInvoice')->with(['clients' => $clients, 'invoiceData' => $invoiceData, 'vendor_data' => $vendorData]);
     }
 
@@ -62,16 +64,14 @@ class VendorController extends Controller
     {
         // $id = 4;
         $data = Invoice::find($id);
-        $userData = Auth::guard('vendor')->user();
         $vendorData = Auth::guard('vendor')->user();
-        return view('vendor.invoice.invoicePreview')->with(['data' => $data, 'user_data' => $userData, 'vendor_data' => $vendorData]);
+        return view('vendor.invoice.invoicePreview')->with(['data' => $data, 'vendor_data' => $vendorData]);
     }
 
-
-    public function createTemplate(){
+    public function createTemplate()
+    {
         return view('vendor.template.createTemplate');
     }
-
 
     public function profile()
     {
@@ -79,7 +79,7 @@ class VendorController extends Controller
         return view('vendor.profile.profile')->with('vendor_data', $vendorData);
     }
 
-    //  All Post Functions 
+    //  All Post Functions
     public function add_client(Request $request)
     {
         $data = $request->validate([
@@ -89,28 +89,32 @@ class VendorController extends Controller
         if (Clients::create([
             'client_name' => $request->client_name,
             'created_at' => date('Y-m-d H:i:s'),
-            'status'      => 1
+            'status' => 1,
         ])) {
             return response()->json($this->response_array('success', ['New Added successful']));
-        } else
+        } else {
             return response()->json($this->response_array('error', ['Something went Wrong.']));
+        }
+
     }
 
     public function edit_client(Request $request)
     {
         $data = $request->validate([
             'client_name' => 'required|string',
-            'id'          => 'required',
-            'status'      => 'required'
+            'id' => 'required',
+            'status' => 'required',
         ]);
 
         if (Clients::where('id', $request->id)->update([
             'client_name' => $request->client_name,
-            'status'      => $request->status
-        ]))
+            'status' => $request->status,
+        ])) {
             return response()->json($this->response_array('success', ['Updated successful']));
-        else
+        } else {
             return response()->json($this->response_array('error', ['Something went wrong!']));
+        }
+
     }
 
     public function validate_vendor(Request $request)
@@ -120,8 +124,9 @@ class VendorController extends Controller
             'password' => 'required',
         ]);
 
-        if (!Auth::guard('vendor')->attempt($credentials, false))
+        if (!Auth::guard('vendor')->attempt($credentials, false)) {
             return response()->json($this->response_array('error', ['Incorrect Credentials']));
+        }
 
         $id = Auth::guard('vendor')->user()->id;
         Vendor::find($id)->update(['last_login_ip' => $request->ip(), 'last_login_time' => date('Y-m-d H:i:s')]);
@@ -129,7 +134,7 @@ class VendorController extends Controller
         return response()->json($this->response_array('success', ['Login successful']));
     }
 
-    // Invoice Section 
+    // Invoice Section
     public function add_invoice(Request $request)
     {
         $id = Auth::guard('vendor')->user()->id;
@@ -143,22 +148,23 @@ class VendorController extends Controller
             'bill_to' => json_encode($request->bill_to),
             'ship_to' => '',
             'po_details' => json_encode($request->po_details),
-            'product_details' =>  json_encode($request->box),
-            'notes' =>  json_encode($request->notes),
-            'extra' =>  json_encode($request->extra),
+            'product_details' => json_encode($request->box),
+            'notes' => json_encode($request->notes),
+            'extra' => json_encode($request->extra),
             'created_at' => date('Y-m-d H:i:s'),
-            'status' => 1
+            'status' => 1,
         ];
 
-        Cache::forever('addInvoiceData_'.$id, $data);
+        Cache::forever('addInvoiceData_' . $id, $data);
         // Redis::set('addInvoiceData_'.$id, $data);
 
         if (Invoice::create($data)) {
             dd($this->response_array('success', ['New Added successful']));
-        } else
+        } else {
             dd($this->response_array('success', ['error']));
-    }
+        }
 
+    }
 
     public function edit_profile(Request $request)
     {
@@ -168,6 +174,18 @@ class VendorController extends Controller
     {
         Auth::guard('vendor')->logout();
         return redirect()->route('vendorlogin');
+    }
+
+    public function downloadPdf($id)
+    {
+        $data = Invoice::find($id);
+        $vendorData = Auth::guard('vendor')->user();
+        // $html = view('vendor.invoice.invoicePreview', ['data' => $data, 'vendor_data' => $vendorData])->render();
+
+        // view()->share('employee', $data);
+        $pdf = PDF::loadView('vendor.invoice.invoicePreview', ['data' => $data, 'vendor_data' => $vendorData])->setPaper('a4', 'landscape');
+        // download PDF file with download method
+        return $pdf->download('report.pdf');
     }
 
     // Helper Functions

@@ -498,7 +498,7 @@
         <div style="padding: 20px 0px 50px 0px" class="ttm-row only-one-section ttm-bgcolor-white clearfix">
             <div class="container">
 
-                <!-- row -->                
+                <!-- row -->
                 <div class="table_width" style="border:1px solid #000; padding:5px">
 
                     <div style="display: flex; justify-content: space-between;padding:15px">
@@ -514,7 +514,7 @@
                     <div style="display: flex; justify-content: space-between;">
                         <div>
                             <p style="text-align: left;"><span style="font-size:
-                  17px;font-weight:500">Regd Off : {!! $user_data->office_address !!}
+                  17px;font-weight:500">Regd Off : {!! $vendor_data->office_address !!}
                             </p>
                         </div>
                         <div>
@@ -673,11 +673,11 @@
                                         <td class="" style="border-top: 0px" colspan="1">{{ $product['p_total'] }}</td>
                                     </tr>
 
-                                    @php($total = $total + $product['p_total']) 
+                                    @php($total = $total + $product['p_total'])
                                     @endforeach
-                                    
 
-                                    @php($extraCharges = json_decode($data['extra'],true))
+
+                                    @php($extraCharges = $data['extra'] == null ? array() : json_decode($data['extra'],true))
                                     @if(count($extraCharges) > 0)
                                         @foreach($extraCharges[0] as $key => $singleCharge)
 
@@ -726,13 +726,13 @@
                     <div style="display: flex; justify-content:space-between">
                         <div style="text-align:left;color:#000;font-weight:400;font-size:13px;border:1px solid #000">
                             <p style="padding:10px;margin:0px">
-                                {!! $user_data->bank_details !!}
+                                {!! $vendor_data->bank_details !!}
                             </p>
                         </div>
 
                         <div style="text-align:left;color:#000;font-weight:400;font-size:13px;border:1px solid #000">
                             <p style="padding:10px;margin:0px">
-                                {!! $user_data->swift_bank_details !!}
+                                {!! $vendor_data->swift_bank_details !!}
                             </p>
                         </div>
 
@@ -741,7 +741,7 @@
 
 
                     <p class="bold" style="margin-top: 10px; text-align: center">
-                        Sales Off : {!! $user_data->other_address !!}
+                        Sales Off : {!! $vendor_data->other_address !!}
                     </p>
 
 

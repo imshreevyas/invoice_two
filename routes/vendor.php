@@ -23,7 +23,7 @@ Route::group(['middleware' => 'vendor_auth'], function(){
 
     // Dashboard
     Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
-    
+
     // Client Section
     Route::get('/allClients', [VendorController::class, 'allClients']);
     Route::post('/add_client', [VendorController::class, 'add_client']);
@@ -35,14 +35,15 @@ Route::group(['middleware' => 'vendor_auth'], function(){
     Route::get('/editInvoice/{id}', [VendorController::class, 'editInvoice']);
     Route::post('/add_invoice', [VendorController::class, 'add_invoice']);
     Route::get('/invoicePreview/{id}', [VendorController::class, 'invoicePreview']);
+    Route::get('/invoiceDownload/{id}', [VendorController::class, 'downloadPdf']);
 
     // Template Creation
     Route::get('/createTemplate', [VendorController::class, 'createTemplate']);
-    
+
     // Profile Section
     Route::get('/profile', [VendorController::class, 'profile']);
     Route::get('/editProfile', [VendorController::class, 'editProfile']);
-    
+
     // Support Section
     Route::get('/support', [VendorController::class, 'support']);
     Route::get('/addSupport', [VendorController::class, 'addSupport']);
