@@ -26,6 +26,11 @@
   <!-- summernote -->
   <link rel="stylesheet" href="<?= url('public/plugins/summernote/summernote-bs4.min.css') ?>">
   <link rel="stylesheet" href="<?=url('public/snackbar/toastify.min.css')?>">
+
+  <!-- include summernote css/js -->
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+  
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">

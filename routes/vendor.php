@@ -40,8 +40,9 @@ Route::group(['middleware' => 'vendor_auth'], function(){
     Route::get('/createTemplate', [VendorController::class, 'createTemplate']);
     
     // Profile Section
-    Route::get('/profile', [VendorController::class, 'profile']);
-    Route::get('/editProfile', [VendorController::class, 'editProfile']);
+    Route::get('/profile', [VendorController::class, 'profile'])->name('profile');
+    Route::post('/editProfile', [VendorController::class, 'editProfile']);
+    Route::post('/update_logo', [VendorController::class, 'update_logo']);
     
     // Support Section
     Route::get('/support', [VendorController::class, 'support']);

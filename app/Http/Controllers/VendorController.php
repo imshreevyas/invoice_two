@@ -25,10 +25,10 @@ class VendorController extends Controller
 
     public function login()
     {
-        if(Auth::guard('vendor')->user() != '')
-        return redirect()->route('dashboard');
+        if (Auth::guard('vendor')->user() != '')
+            return redirect()->route('dashboard');
         else
-        return view('vendor.auth.login');
+            return view('vendor.auth.login');
     }
 
     public function allClients()
@@ -44,12 +44,12 @@ class VendorController extends Controller
         $vendorData = Auth::guard('vendor')->user();
         return view('vendor.invoice.invoices')->with(['data' => $data, 'vendor_data' => $vendorData]);
     }
-    
+
     public function addInvoice()
     {
         $vendorData = Auth::guard('vendor')->user();
         $clients = Clients::select('client_name')->orderByDesc('id')->get();
-        $invoiceData = Cache::get('addInvoiceData_'.$vendorData->id);
+        $invoiceData = Cache::get('addInvoiceData_' . $vendorData->id);
         return view('vendor.invoice.addInvoice')->with(['clients' => $clients, 'invoiceData' => $invoiceData, 'vendor_data' => $vendorData]);
     }
 
@@ -68,7 +68,8 @@ class VendorController extends Controller
     }
 
 
-    public function createTemplate(){
+    public function createTemplate()
+    {
         return view('vendor.template.createTemplate');
     }
 
@@ -76,7 +77,7 @@ class VendorController extends Controller
     public function profile()
     {
         $vendorData = Auth::guard('vendor')->user();
-        return view('vendor.profile.profile')->with('vendor_data', $vendorData);
+        return view('vendor.profile.profile')->with(['vendor_data' => $vendorData]);
     }
 
     //  All Post Functions 
@@ -150,18 +151,62 @@ class VendorController extends Controller
             'status' => 1
         ];
 
-        Cache::forever('addInvoiceData_'.$id, $data);
+        Cache::forever('addInvoiceData_' . $id, $data);
         // Redis::set('addInvoiceData_'.$id, $data);
 
         if (Invoice::create($data)) {
             dd($this->response_array('success', ['New Added successful']));
         } else
-            dd($this->response_array('success', ['error']));
+            dd($this->response_array('error', ['Something went wrong']));
     }
 
 
-    public function edit_profile(Request $request)
+    public function editProfile(Request $request)
     {
+        // dd($request->all());
+        $vendorData = Auth::guard('vendor')->user();
+        $data  = [
+            'company_name' => $request->company_name,
+            'email' => $request->email,
+            'office_no' => $request->office_no,
+            'other_no' => $request->other_no,
+            'office_address' => $request->office_address,
+            'other_address' => $request->other_address,
+            'bank_details' => $request->bank_details,
+            'swift_bank_details' => $request->swift_bank_details,
+            'city' => $request->city,
+            'state' => $request->state,
+        ];
+
+        if (Vendor::find($vendorData->id)->update($data)){
+            session(['type' => 'success', 'msg' => ["Profile Updated Successfully"]]);
+            return redirect()->route('profile');
+        }else{
+            session(['type' => 'error', 'msg' => ["Please Select Profile Photo"]]);
+            return redirect()->route('profile');
+        }
+    }
+
+    public function update_logo(Request $request)
+    {
+        $vendorData = Auth::guard('vendor')->user();
+        if ($request->logo == '') {
+            session(['type' => 'error', 'msg' => ["Please Select Profile Photo"]]);
+            return redirect()->route('profile');
+        }
+
+        $img_name = time() . '.' . $request->logo->getClientOriginalExtension();
+        $request->logo->move(public_path('img/'), $img_name);
+        $imagePath = 'public/img/' . $img_name;
+
+        $data = [
+            'logo' => $imagePath,
+        ];
+
+        if (Vendor::find($vendorData->id)->update($data))
+            return $this->response_array('success', ['New Added successful']);
+        else
+            return $this->response_array('error', ['Something went wrong']);
     }
 
     public function logout()

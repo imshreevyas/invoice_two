@@ -576,7 +576,7 @@
 
 
                     <!-- PO Details Section -->
-                    @php($po_details = $data['po_details'] != '' ? json_decode($data['po_details'],true) : array())
+                    @php($po_details = $data['po_details'] != '' ? json_decode($data['po_details'], true) : array())
                     @if($data['invoice_type'] != 2 && count($po_details) > 0)
                     <table style="border-collapse:collapse;border-spacing:0px;width: 100%;border-top:1px;margin-top:15px" id="headings" class="table table-bordered">
                         <tbody style="border: 1px solid;">
@@ -677,7 +677,7 @@
                                     @endforeach
                                     
 
-                                    @php($extraCharges = json_decode($data['extra'],true))
+                                    @php($extraCharges = $data['extra'] != '' ? json_decode($data['extra'],true) : array())
                                     @if(count($extraCharges) > 0)
                                         @foreach($extraCharges[0] as $key => $singleCharge)
 
